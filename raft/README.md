@@ -26,7 +26,8 @@ This raft implementation is a full feature implementation of Raft protocol. Feat
 - Log compaction 
 - Membership changes
 - Leadership transfer extension
-- Lease-based linearizable read-only queries served by both the leader and followers
+- Effecient linearizable read-only queries served by both the leader and followers
+- More effecient lease-based linearizable read-only queries served by both the leader and followers
 
 This raft implementation also includes a few optional enhancements:
 
