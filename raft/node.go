@@ -151,11 +151,6 @@ type Node interface {
 	// Read state has a read index. Once the application advances further than the read
 	// index, any linearizable read requests issued before the read request can be
 	// processed safely. The read state will have the same rctx attached.
-	//
-	// Note: the current implementation depends on the leader lease. If the clock drift is unbounded,
-	// leader might keep the lease longer than it should (clock can move backward/pause without any bound).
-	// ReadIndex is not safe in that case.
-	// TODO: add clock drift bound into raft configuration.
 	ReadIndex(ctx context.Context, rctx []byte) error
 
 	// Status returns the current status of the raft state machine.
