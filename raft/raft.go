@@ -410,7 +410,12 @@ func (r *raft) bcastAppend() {
 
 // bcastHeartbeat sends RPC, without entries to all the peers.
 func (r *raft) bcastHeartbeat() {
-	r.bcastHeartbeatWithCtx(nil)
+	lastCtx := r.readOnly.lastPendingRequestCtx()
+	if len(lastCtx) == 0 {
+		r.bcastHeartbeatWithCtx(nil)
+	} else {
+		r.bcastHeartbeatWithCtx([]byte(lastCtx))
+	}
 }
 
 func (r *raft) bcastHeartbeatWithCtx(ctx []byte) {
@@ -706,6 +711,10 @@ func stepLeader(r *raft, m pb.Message) {
 		return
 	case pb.MsgReadIndex:
 		if r.quorum() > 1 {
+			// thinking: use an interally defined context instead of the user given context.
+			// We can express this in terms of the term and index instead of a user-supplied value.
+			// This would allow multiple reads to piggyback on the same message.
+			// However, this might complicate the design since we need to hand
 			switch r.readOnly.option {
 			case ReadOnlySafe:
 				r.readOnly.addRequest(r.raftLog.committed, m)

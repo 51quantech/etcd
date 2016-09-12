@@ -1450,6 +1450,9 @@ func TestReadOnlyOptionSafe(t *testing.T) {
 		nt.send(pb.Message{From: tt.sm.id, To: tt.sm.id, Type: pb.MsgReadIndex, Entries: []pb.Entry{{Data: tt.wctx}}})
 
 		r := tt.sm
+		if len(r.readStates) == 0 {
+			t.Errorf("#%d: len(readStates) = 0, want non-zero", i)
+		}
 		rs := r.readStates[0]
 		if rs.Index != tt.wri {
 			t.Errorf("#%d: readIndex = %d, want %d", i, rs.Index, tt.wri)
